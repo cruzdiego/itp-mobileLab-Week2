@@ -7,19 +7,214 @@
 //
 
 import UIKit
+import CoreMotion
 
 class ViewController: UIViewController {
-
+    //MARK: - Properties
+    //MARK: Public
+    //IBOutlets
+    
+    //*** Orientations ***
+    @IBOutlet weak var orientation1ImageView: UIImageView?
+    @IBOutlet weak var orientation2ImageView: UIImageView?
+    @IBOutlet weak var orientation3ImageView: UIImageView?
+    @IBOutlet weak var orientation4ImageView: UIImageView?
+    @IBOutlet weak var orientation5ImageView: UIImageView?
+    @IBOutlet weak var orientation6ImageView: UIImageView?
+    public var orientationImageViews: [UIImageView?] {
+        return [orientation1ImageView,orientation2ImageView,orientation3ImageView,orientation4ImageView,orientation5ImageView,orientation6ImageView]
+    }
+    //********************
+    
+    //*** Overlays ***
+    @IBOutlet weak var tryAgainOverlayView:UIView?
+    @IBOutlet weak var lockedOverlayView: UIView?
+    @IBOutlet weak var unlockedOverlayView: UIView?
+    //****************
+    
+    //MARK: Private
+    //Objects
+    private let correctPasscode:[Orientation] = [.portrait, .landscapeLeft, .landscapeRight, .portrait, .portraitUpsideDown, .landscapeLeft]
+    private var attemptedPasscode = [Orientation](){
+        didSet{
+            didSetOrientations()
+        }
+    }
+    private var currentState: State = .inputing {
+        didSet {
+            didSetCurrentState()
+        }
+    }
+    private var totalAttempts = 0
+    private let motionManager = CMMotionManager()
+    private let motionOperationqueue = OperationQueue()
+    
+    //Enums
+    private enum Orientation: String {
+        case noOrientation = "noOrientationIcon"
+        case portrait = "portraitIcon"
+        case landscapeRight = "landscapeRightIcon"
+        case landscapeLeft = "landscapeLeftIcon"
+        case portraitUpsideDown = "portraitUpsideDownIcon"
+        
+        var image: UIImage? {
+            return UIImage(named:self.rawValue)
+        }
+    }
+    private enum State {
+        case inputing
+        case unlocked
+        case locked
+        case tryAgain
+    }
+    
+    //MARK: - Public methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        configure()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    //MARK: - Private methods
+    //MARK: didSet
+    private func didSetOrientations() {
+        refreshUI()
     }
-
-
+    private func didSetCurrentState() {
+        refreshUI()
+        if currentState == .tryAgain {
+            perform(after: 2.0, closure: {
+                self.clearAttemptedPasscode()
+                self.currentState = .inputing
+            })
+        }
+    }
+    
+    //MARK: Configure
+    private func configure() {
+        refreshUI()
+        configureMotion()
+    }
+    
+    //MARK: UI
+    private func refreshUI() {
+        //*** Orientations ***
+        func refreshOrientationsUI() {
+            for (index,imageView) in orientationImageViews.enumerated() {
+                guard attemptedPasscode.count > index else {
+                    imageView?.image = Orientation.noOrientation.image
+                    continue
+                }
+                
+                imageView?.image = attemptedPasscode[index].image
+            }
+        }
+        //********************
+        
+        //*** Overlays ***
+        func refreshOverlaysUI() {
+            tryAgainOverlayView?.isHidden = currentState != .tryAgain
+            lockedOverlayView?.isHidden = currentState != .locked
+            unlockedOverlayView?.isHidden = currentState != .unlocked
+        }
+        //****************
+    }
+    
+    //MARK: Util
+    private func isPasscodeCorrect() -> Bool {
+        return correctPasscode == attemptedPasscode
+    }
+    
+    private func input(orientation: Orientation) {
+        //*** is AttemptedCode Full ***
+        func isAttemptepCodeFull() -> Bool{
+            return attemptedPasscode.count == 6
+        }
+        //*****************************
+        
+        //*** got MaxAttempts ***
+        func gotMaxAttempts() -> Bool {
+            return totalAttempts >= 3
+        }
+        //***********************
+        
+        //
+        attemptedPasscode.append(orientation)
+        guard isAttemptepCodeFull() else {
+            return
+        }
+        
+        totalAttempts += 1
+        if isPasscodeCorrect() {
+            currentState = .unlocked
+        } else {
+            currentState = gotMaxAttempts() ? .locked : .tryAgain
+        }
+    }
+    
+    private func clearAttemptedPasscode() {
+        attemptedPasscode.removeAll()
+    }
+    
+    private func perform(after: TimeInterval, closure:@escaping ()->()) {
+        let timeAfter = DispatchTime.now() + after
+        DispatchQueue.main.asyncAfter(deadline: timeAfter, execute: closure)
+    }
+    
+    //MARK: Motion
+    private func configureMotion() {
+        guard motionManager.isDeviceMotionAvailable else {
+            return
+        }
+        
+        motionManager.deviceMotionUpdateInterval = 0.02
+        motionManager.startDeviceMotionUpdates(to: motionOperationqueue) {
+            [weak self] (data: CMDeviceMotion?, error: Error?) in
+            self?.handle(motion: data)
+        }
+    }
+    
+    private func handle(motion: CMDeviceMotion?) {
+        //*** didShake ***
+        func didShake() -> Bool{
+            guard let acelerationY = motion?.userAcceleration.y else {
+                return false
+            }
+            
+            return acelerationY < -2.0
+        }
+        //****************
+        
+        //*** Current Orientation ***
+        func currentOrientation() -> Orientation {
+            guard let gravity = motion?.gravity else {
+                return .noOrientation
+            }
+            
+            //Credits: https://stackoverflow.com/questions/27718123/detect-actual-orientation-of-the-device-when-the-orientation-lock-is-enabled-io
+            if fabs(gravity.x) > fabs(gravity.y) { //Landscape
+                if gravity.x >= 0 { // Left
+                    return .landscapeLeft
+                } else{ // Right
+                    return .landscapeRight
+                }
+            }
+            else{ // Portrait
+                if gravity.y >= 0 { //upsideDown
+                    return .portraitUpsideDown
+                }
+                else{ //up
+                    return .portrait
+                }
+            }
+        }
+        //***************************
+        
+        //
+        if didShake() {
+            OperationQueue.main.addOperation {
+                self.input(orientation: currentOrientation())
+            }
+        }
+    }
 }
 

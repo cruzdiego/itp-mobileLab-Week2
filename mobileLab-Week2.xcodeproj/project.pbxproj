@@ -12,6 +12,8 @@
 		0839B351202B85CB00B51855 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0839B34F202B85CB00B51855 /* Main.storyboard */; };
 		0839B353202B85CB00B51855 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0839B352202B85CB00B51855 /* Assets.xcassets */; };
 		0839B356202B85CB00B51855 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0839B354202B85CB00B51855 /* LaunchScreen.storyboard */; };
+		0839B360202B891C00B51855 /* RoundedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0839B35F202B891C00B51855 /* RoundedImageView.swift */; };
+		0839B364202B978500B51855 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0839B363202B978500B51855 /* CoreMotion.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		0839B352202B85CB00B51855 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0839B355202B85CB00B51855 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0839B357202B85CB00B51855 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0839B35F202B891C00B51855 /* RoundedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageView.swift; sourceTree = "<group>"; };
+		0839B363202B978500B51855 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0839B364202B978500B51855 /* CoreMotion.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +45,7 @@
 			children = (
 				0839B34A202B85CB00B51855 /* mobileLab-Week2 */,
 				0839B349202B85CB00B51855 /* Products */,
+				0839B362202B978500B51855 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,6 +60,7 @@
 		0839B34A202B85CB00B51855 /* mobileLab-Week2 */ = {
 			isa = PBXGroup;
 			children = (
+				0839B35D202B88D200B51855 /* Subviews */,
 				0839B34B202B85CB00B51855 /* AppDelegate.swift */,
 				0839B34D202B85CB00B51855 /* ViewController.swift */,
 				0839B34F202B85CB00B51855 /* Main.storyboard */,
@@ -62,6 +69,22 @@
 				0839B357202B85CB00B51855 /* Info.plist */,
 			);
 			path = "mobileLab-Week2";
+			sourceTree = "<group>";
+		};
+		0839B35D202B88D200B51855 /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				0839B35F202B891C00B51855 /* RoundedImageView.swift */,
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
+		0839B362202B978500B51855 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0839B363202B978500B51855 /* CoreMotion.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,6 +161,7 @@
 			files = (
 				0839B34E202B85CB00B51855 /* ViewController.swift in Sources */,
 				0839B34C202B85CB00B51855 /* AppDelegate.swift in Sources */,
+				0839B360202B891C00B51855 /* RoundedImageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
