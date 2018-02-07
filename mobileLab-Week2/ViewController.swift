@@ -48,7 +48,6 @@ class ViewController: UIViewController {
     private var totalAttempts = 0
     private let motionManager = CMMotionManager()
     private let motionOperationqueue = OperationQueue()
-    private let motionSemaphore = DispatchSemaphore(value: 1)
     private var lastOrientationRegistered: Date?
     
     //Enums
