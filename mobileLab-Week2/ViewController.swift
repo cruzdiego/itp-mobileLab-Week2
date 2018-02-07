@@ -37,7 +37,7 @@ class ViewController: UIViewController {
     private let correctPasscode:[Orientation] = [.portrait, .landscapeLeft, .landscapeRight, .portrait, .portraitUpsideDown, .landscapeLeft]
     private var attemptedPasscode = [Orientation](){
         didSet{
-            didSetOrientations()
+            didSetAttemptedPasscode()
         }
     }
     private var currentState: State = .inputing {
@@ -48,6 +48,7 @@ class ViewController: UIViewController {
     private var totalAttempts = 0
     private let motionManager = CMMotionManager()
     private let motionOperationqueue = OperationQueue()
+    private let motionSemaphore =
     
     //Enums
     private enum Orientation: String {
@@ -76,7 +77,7 @@ class ViewController: UIViewController {
     
     //MARK: - Private methods
     //MARK: didSet
-    private func didSetOrientations() {
+    private func didSetAttemptedPasscode() {
         refreshUI()
     }
     private func didSetCurrentState() {
@@ -117,6 +118,10 @@ class ViewController: UIViewController {
             unlockedOverlayView?.isHidden = currentState != .unlocked
         }
         //****************
+        
+        //
+        refreshOrientationsUI()
+        refreshOverlaysUI()
     }
     
     //MARK: Util
@@ -176,11 +181,16 @@ class ViewController: UIViewController {
     private func handle(motion: CMDeviceMotion?) {
         //*** didShake ***
         func didShake() -> Bool{
-            guard let acelerationY = motion?.userAcceleration.y else {
+            guard   let acelerationY = motion?.userAcceleration.y,
+                    let acelerationX = motion?.userAcceleration.x else {
                 return false
             }
             
-            return acelerationY < -2.0
+            if fabs(acelerationY) > 1.0 || fabs(acelerationX) > 1.0 {
+                return true
+            }
+            
+            return false
         }
         //****************
         
@@ -212,7 +222,8 @@ class ViewController: UIViewController {
         //
         if didShake() {
             OperationQueue.main.addOperation {
-                self.input(orientation: currentOrientation())
+                print("Orientation: \(currentOrientation().rawValue)")
+                //self.input(orientation: currentOrientation())
             }
         }
     }
