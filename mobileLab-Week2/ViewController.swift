@@ -223,7 +223,7 @@ class ViewController: UIViewController {
         if didShake() {
             let lastDate = lastOrientationRegistered ?? Date.distantPast
             
-            if  fabs(lastDate.timeIntervalSinceNow) <= 1.0 {
+            if  fabs(lastDate.timeIntervalSinceNow) <= 0.5 {
                 return
             }
             
