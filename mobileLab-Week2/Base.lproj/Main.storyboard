@@ -112,11 +112,11 @@
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UNLOCKED" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8YS-xG-0Ht">
                                         <rect key="frame" x="102.5" y="120" width="364" height="81.5"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="68"/>
-                                        <color key="textColor" red="0.43137254899999999" green="0.79607843140000001" blue="0.59607843140000005" alpha="1" colorSpace="deviceRGB"/>
+                                        <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.070588235289999995" blue="0.1529411765" alpha="0.79258362676056338" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.070588235289999995" blue="0.1529411765" alpha="0.88863456854138523" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="8YS-xG-0Ht" firstAttribute="centerX" secondItem="l5B-Gn-Cdc" secondAttribute="centerX" id="IFD-fc-yzo"/>
                                     <constraint firstItem="8YS-xG-0Ht" firstAttribute="centerY" secondItem="l5B-Gn-Cdc" secondAttribute="centerY" id="TZL-ex-xbj"/>
