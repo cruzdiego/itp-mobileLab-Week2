@@ -48,7 +48,8 @@ class ViewController: UIViewController {
     private var totalAttempts = 0
     private let motionManager = CMMotionManager()
     private let motionOperationqueue = OperationQueue()
-    private let motionSemaphore =
+    private let motionSemaphore = DispatchSemaphore(value: 1)
+    private var lastOrientationRegistered: Date?
     
     //Enums
     private enum Orientation: String {
@@ -221,9 +222,16 @@ class ViewController: UIViewController {
         
         //
         if didShake() {
+            let lastDate = lastOrientationRegistered ?? Date.distantPast
+            
+            if  fabs(lastDate.timeIntervalSinceNow) <= 1.0 {
+                return
+            }
+            
+            lastOrientationRegistered = Date()
             OperationQueue.main.addOperation {
                 print("Orientation: \(currentOrientation().rawValue)")
-                //self.input(orientation: currentOrientation())
+                self.input(orientation: currentOrientation())
             }
         }
     }
